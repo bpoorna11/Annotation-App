@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "679752371594",
+    "firebase_url": "https://guess-the-audio.firebaseio.com",
+    "project_id": "guess-the-audio",
+    "storage_bucket": "guess-the-audio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679752371594:android:32d5db09b4231827",
+        "android_client_info": {
+          "package_name": "english.android.com.guess_the_audio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679752371594-47ke2hj66ongo8o1pcjrm4dt4mm3vnsc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "english.android.com.guess_the_audio",
+            "certificate_hash": "93ce9d54b7958bf6af98c8b6f4486d11e83738df"
+          }
+        },
+        {
+          "client_id": "679752371594-qqkhdmon3t7u64d50aus904jjs40nbcm.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "679752371594-qqkhdmon3t7u64d50aus904jjs40nbcm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8T2rSgWOKNIY_07Jpv6m_TSbDSJZskag"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679752371594-qqkhdmon3t7u64d50aus904jjs40nbcm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="dot_colors">
+        <item>#ba000d</item>
+        <item>#f44336</item>
+        <item>#E57373</item>
+    </array>
+
+    <array name="native_languages">
+        <item>English</item>
+        <item>Hindi</item>
+        <item>Kannada</item>
+        <item>Tamil</item>
+        <item>Malayalam</item>
+        <item>Gujarati</item>
+        <item>Punjabi</item>
+        <item>Bengali</item>
+        <item>Assamese</item>
+        <item>Marathi</item>
+        <item>Telugu</item>
+    </array>
+</resources>

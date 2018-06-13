@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Guess The Audio</string>
+
+    <string name="total_text">500</string>
+    <string name="previous_button">Previous</string>
+    <string name="next_button">Next</string>
+    <string name="expert_audio">Expert Audio</string>
+    <string name="record_audio">Record Audio</string>
+    <string name="title_activity_prononcer_navigation_drawer">PrononcerNavigationDrawerActivity
+    </string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="full_name">Enter your Full Name</string>
+    <string name="native_language">Native Language</string>
+    <string name="age">Enter your age</string>
+    <string name="gender">Gender :</string>
+    <string name="save">Save</string>
+    <string name="name_length">Please enter more that 6 characters!</string>
+    <string name="min_max_age">Enter correct age!</string>
+    <string name="select_gender">Please select a gender</string>
+    <string name="native_language_error">Please enter your native language!</string>
+    <string name="firebase_login_failed">Login Failed! Please try again!</string>
+
+    <!--facebook login ids-->
+    <string name="facebook_app_id">195834661064163</string>
+    <string name="fb_login_protocol_scheme">fb195834661064163</string>
+    <string name="enter_text_hint">Enter the audio text</string>
+
+</resources>
