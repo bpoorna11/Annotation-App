@@ -80,6 +80,7 @@ public class LoginDetailsActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()) {
+
                                 startActivity(new Intent(LoginDetailsActivity.this,
                                         PronouncerNavigationDrawerActivity.class));
                                 finish();

@@ -29,5 +29,9 @@
     <string name="facebook_app_id">195834661064163</string>
     <string name="fb_login_protocol_scheme">fb195834661064163</string>
     <string name="enter_text_hint">Enter the audio text</string>
+    <string name="send">Send</string>
+    <string name="play">Play</string>
+    <string name="edit_text_label">Correct the below text and send</string>
+    <string name="pause">Pause</string>
 
 </resources>

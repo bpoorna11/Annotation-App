@@ -9,12 +9,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,11 +22,10 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chibde.visualizer.LineBarVisualizer;
@@ -46,6 +43,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -55,11 +53,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import english.android.com.guess_the_audio.adapters.TextViewPagerAdapter;
 import english.android.com.guess_the_audio.models.PronounceData;
 import english.android.com.guess_the_audio.models.UserData;
 import english.android.com.guess_the_audio.models.UserEnteredText;
-import english.android.com.guess_the_audio.utils.CustomViewPager;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -72,18 +68,8 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
     private static final String TAG = "record_audio_player_dialog";
 
     //ButterKnife View Injection
-    @BindView(R.id.text_viewpager)
-    CustomViewPager mTextSlideViewPager;
-    @BindView(R.id.main_btn_previous)
-    ImageButton mPreviousButton;
-    @BindView(R.id.main_btn_next)
-    ImageButton mNextButton;
-    @BindView(R.id.main_tv_current_text_number)
-    TextView mCurrentPositionTextView;
-    @BindView(R.id.main_tv_total_text)
-    TextView mTotalTextView;
     @BindView(R.id.player)
-    FloatingActionButton mPlayerActionButton;
+    Button mPlayButton;
     @BindView(R.id.audio_indicator)
     LineBarVisualizer mLineBarVisualizer;
     @BindView(R.id.audio_seek_bar)
@@ -93,9 +79,7 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
     @BindView(R.id.et_enter_text)
     EditText mEnterEditText;
     @BindView(R.id.send)
-    FloatingActionButton mSendButton;
-
-    private TextViewPagerAdapter mTextViewPagerAdapter;
+    Button mSendButton;
 
     //Firebase variables
     private FirebaseAuth mAuth;
@@ -106,7 +90,6 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
     private List<PronounceData> lists = new ArrayList<>();
 
     private int mCurrentTextPosition = 0;
-    private int mCurrentPosition = 1;
     private boolean isPlayerPressed = false;
     private boolean isPlayerPressedFirstTime = true;
     private String childPath = "intonation";
@@ -118,8 +101,7 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        mPlayerActionButton.setImageResource(R.drawable.play);
-        mPlayerActionButton.setEnabled(false);
+        mPlayButton.setEnabled(false);
     }
 
     @Override
@@ -158,15 +140,12 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
             mLineBarVisualizer.setPlayer(mMediaPlayer.getAudioSessionId());
         }
 
-        mLineBarVisualizer.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        mLineBarVisualizer.setColor(ContextCompat.getColor(this, R.color.colorAccent));
         mLineBarVisualizer.setDensity(70);
 
         getDataFromFirebase(childPath);
 
         mHandler = new Handler();
-
-        mTextSlideViewPager.setScrollDurationFactor(6);
-        mTextSlideViewPager.addOnPageChangeListener(mOnPageChangeListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -180,7 +159,7 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                mPlayerActionButton.setImageResource(R.drawable.play);
+                mPlayButton.setText(R.string.play);
                 mMediaPlayer.reset();
                 isPlayerPressed = false;
                 isPlayerPressedFirstTime = true;
@@ -222,45 +201,37 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
                     mRef.child("users_entered_text").child(englishText).setValue(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            UserEnteredText userEnteredText = new UserEnteredText();
-                            userEnteredText.setUserText(audioText);
-                            DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-                            mDatabaseRef.child("users_entered_text").child(englishText).child(uid).setValue(userEnteredText).addOnCompleteListener(
-                                    new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            mEnterEditText.setText("");
-                                            Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent successfully!", Toast.LENGTH_SHORT).show();
+                            if(task.isSuccessful()) {
+                                UserEnteredText userEnteredText = new UserEnteredText();
+                                userEnteredText.setUserText(audioText);
+                                DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+                                mDatabaseRef.child("users_entered_text").child(englishText).child(uid).setValue(userEnteredText).addOnCompleteListener(
+                                        new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    mCurrentTextPosition++;
+                                                    mMediaPlayer.reset();
+                                                    PronounceData pronounceData1 = lists.get(mCurrentTextPosition);
+                                                    String englishText = pronounceData1.getEnglishText();
+                                                    mEnterEditText.setText(englishText);
+                                                    Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent successfully!", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent failed! Try again!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
                                         }
-                                    }
-                            );
+                                );
+                            } else {
+                                Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent failed! Try again!", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 }
             }
         });
 
-        mPreviousButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurrentTextPosition > 0) {
-                    mCurrentPosition = mCurrentTextPosition - 1;
-                    mTextSlideViewPager.setCurrentItem(mCurrentPosition);
-                }
-            }
-        });
-
-        mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurrentTextPosition < lists.size()) {
-                    mCurrentPosition = mCurrentTextPosition + 1;
-                    mTextSlideViewPager.setCurrentItem(mCurrentPosition);
-                }
-            }
-        });
-
-        mPlayerActionButton.setOnClickListener(new View.OnClickListener() {
+        mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isPlayerPressed) {
@@ -269,17 +240,14 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
                     isPlayerPressed = true;
                 }
                 if (isPlayerPressed) {
-                    mPlayerActionButton.setImageResource(R.drawable.pause);
+                    mPlayButton.setText(R.string.pause);
                     if (!isPlayerPressedFirstTime) {
                         if (!mMediaPlayer.isPlaying())
                             mMediaPlayer.start();
                         playProgress();
                     } else {
                         mProgressBar.setVisibility(View.VISIBLE);
-                        mTextSlideViewPager.setEnabled(false);
-                        mNextButton.setEnabled(false);
-                        mPreviousButton.setEnabled(false);
-                        mPlayerActionButton.setEnabled(false);
+                        mPlayButton.setEnabled(false);
                         PronounceData pronounceData = lists.get(mCurrentTextPosition);
                         StorageReference mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(pronounceData.getAudioPath());
                         mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -301,9 +269,11 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
                         });
                     }
                 } else {
-                    mPlayerActionButton.setImageResource(R.drawable.play);
+                    mPlayButton.setText(R.string.play);
                     if (mMediaPlayer.isPlaying())
                         mMediaPlayer.pause();
+                    Log.d("Song duration", "" + mMediaPlayer.getDuration());
+                    Log.d("Song position", "" + mMediaPlayer.getCurrentPosition());
                 }
 
             }
@@ -385,15 +355,26 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
     //method for changing data and changing firebase reference path
     private void changeData(String childPath) {
         mCurrentTextPosition = 0;
-        mCurrentPosition = 1;
-        mCurrentPositionTextView.setText("1");
         lists.clear();
-        mTextViewPagerAdapter.notifyDataSetChanged();
         getDataFromFirebase(childPath);
     }
 
     private void getDataFromFirebase(String childPath) {
         DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference().child(childPath);
+
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                PronounceData pronounceData = lists.get(mCurrentTextPosition);
+                String englishText = pronounceData.getEnglishText();
+                mEnterEditText.setText(englishText);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         mDatabaseRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -427,10 +408,7 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
         PronounceData pronounceData = dataSnapshot.getValue(PronounceData.class);
 
         lists.add(pronounceData);
-        mTextViewPagerAdapter = new TextViewPagerAdapter(this, lists);
-        mTextSlideViewPager.setAdapter(mTextViewPagerAdapter);
-        mTotalTextView.setText(lists.size() + "");
-        mPlayerActionButton.setEnabled(true);
+        mPlayButton.setEnabled(true);
     }
 
     private void playProgress() {
@@ -446,31 +424,6 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
             mHandler.postDelayed(mRunnable, 0);
         }
     }
-
-    ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            Log.v("TAG: position =", "" + position);
-            mCurrentPosition = position + 1;
-            mMediaPlayer.stop();
-            mMediaPlayer.reset();
-            mCurrentPositionTextView.setText(String.format("%d", mCurrentPosition));
-            mCurrentTextPosition = position;
-            isPlayerPressedFirstTime = true;
-            mPlayerActionButton.setImageResource(R.drawable.play);
-            mProgressBar.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
 
     @Override
     protected void onStop() {
@@ -512,7 +465,7 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
                         toast.show();
                         mLineBarVisualizer.setPlayer(mMediaPlayer.getAudioSessionId());
                     } else {
-                        mPlayerActionButton.setEnabled(false);
+                        mPlayButton.setEnabled(false);
                         mLineBarVisualizer.setEnabled(false);
                         Toast toast = Toast.makeText(PronouncerNavigationDrawerActivity.this, "Permission Denied. Buttons Disabled!", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER, 0, 0);
@@ -533,10 +486,7 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mTextSlideViewPager.setEnabled(true);
-        mNextButton.setEnabled(true);
-        mPreviousButton.setEnabled(true);
-        mPlayerActionButton.setEnabled(true);
+        mPlayButton.setEnabled(true);
         mProgressBar.setVisibility(View.INVISIBLE);
         mSeekBar.setMax(mp.getDuration());
         mp.start();
