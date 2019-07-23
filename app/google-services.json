@@ -15,16 +15,36 @@
       },
       "oauth_client": [
         {
+          "client_id": "679752371594-2dtvudmu7ecgrifhv1ij79gb3f7lghu8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "english.android.com.guess_the_audio",
+            "certificate_hash": "48a0acc1c2855470370e104924ff8a0514e23fbc"
+          }
+        },
+        {
+          "client_id": "679752371594-0i36dl38ucqctp75sloi6foi9n5ids3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "english.android.com.guess_the_audio",
+            "certificate_hash": "4fab3963b64f24c0510201911e1c1f1af3f94dc5"
+          }
+        },
+        {
+          "client_id": "679752371594-p4b4n03447gptu03f9chrvgb29n1eb25.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "english.android.com.guess_the_audio",
+            "certificate_hash": "904e8323541988f0fe1fef9166daf9746978d2be"
+          }
+        },
+        {
           "client_id": "679752371594-47ke2hj66ongo8o1pcjrm4dt4mm3vnsc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "english.android.com.guess_the_audio",
             "certificate_hash": "93ce9d54b7958bf6af98c8b6f4486d11e83738df"
           }
-        },
-        {
-          "client_id": "679752371594-qqkhdmon3t7u64d50aus904jjs40nbcm.apps.googleusercontent.com",
-          "client_type": 3
         },
         {
           "client_id": "679752371594-qqkhdmon3t7u64d50aus904jjs40nbcm.apps.googleusercontent.com",
@@ -37,20 +57,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "679752371594-qqkhdmon3t7u64d50aus904jjs40nbcm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

@@ -2,13 +2,16 @@ package english.android.com.guess_the_audio;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -26,11 +29,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chibde.visualizer.LineBarVisualizer;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,6 +59,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import english.android.com.guess_the_audio.models.PronounceData;
+import english.android.com.guess_the_audio.models.User;
 import english.android.com.guess_the_audio.models.UserData;
 import english.android.com.guess_the_audio.models.UserEnteredText;
 
@@ -62,12 +68,14 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class PronouncerNavigationDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MediaPlayer.OnPreparedListener {
+        implements  MediaPlayer.OnPreparedListener {
 
     public static final int REQUEST_PERMISSION_CODE = 1;
     private static final String TAG = "record_audio_player_dialog";
 
     //ButterKnife View Injection
+    @BindView(R.id.textView2)
+    TextView tv2;
     @BindView(R.id.player)
     Button mPlayButton;
     @BindView(R.id.audio_indicator)
@@ -86,14 +94,15 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseUser mUser;
     private DatabaseReference mRef;
-
+    String emailid="";
     private List<PronounceData> lists = new ArrayList<>();
-
+    private List<UserData> lists1 = new ArrayList<>();
+    public static int sendPressed=0,editedAudio=0;
     private int mCurrentTextPosition = 0;
     private boolean isPlayerPressed = false;
     private boolean isPlayerPressedFirstTime = true;
-    private String childPath = "intonation";
-
+    private String childPath = "audio_data";
+    private int c=0;public static int songPos=0;boolean check=false;
     private MediaPlayer mMediaPlayer;
     private Runnable mRunnable;
     private Handler mHandler;
@@ -108,15 +117,15 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prononcer_navigation_drawer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
         //Firebase Auth Instance
         mAuth = FirebaseAuth.getInstance();
         mRef = FirebaseDatabase.getInstance().getReference();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-
+        System.out.println("Email of current user "+mAuth.getCurrentUser().getEmail());
         // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -126,7 +135,7 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
         // [END config_signin]
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
+        System.out.println("Email of current user "+mAuth.getCurrentUser().getEmail());
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -140,26 +149,29 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
             mLineBarVisualizer.setPlayer(mMediaPlayer.getAudioSessionId());
         }
 
-        mLineBarVisualizer.setColor(ContextCompat.getColor(this, R.color.colorAccent));
+      //  mLineBarVisualizer.setColor(ContextCompat.getColor(this, R.color.colorAccent));
         mLineBarVisualizer.setDensity(70);
-
         getDataFromFirebase(childPath);
+
+
 
         mHandler = new Handler();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+       // ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            //    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+       // drawer.addDrawerListener(toggle);
+       // toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+      //  NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+      //  navigationView.setNavigationItemSelectedListener(this);
 
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onCompletion(MediaPlayer mp) {
-                mPlayButton.setText(R.string.play);
+               // mPlayButton.setText(R.string.play);
+                mPlayButton.setBackground(getApplicationContext().getDrawable(R.drawable.play1));
                 mMediaPlayer.reset();
                 isPlayerPressed = false;
                 isPlayerPressedFirstTime = true;
@@ -185,53 +197,60 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
 
             }
         });
+        emailid=mAuth.getCurrentUser().getEmail();
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+        if (acct != null) {
+            emailid=acct.getEmail();
+        }
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                c=0;
                 final String audioText = mEnterEditText.getText().toString();
                 if(audioText.length() == 0) {
                     mEnterEditText.setError("Enter the correct text");
                 } else {
+
                     PronounceData pronounceData = lists.get(mCurrentTextPosition);
-                    final String englishText = pronounceData.getEnglishText();
+                    final String englishText = pronounceData.getAudioId();
                     final String audioPath = pronounceData.getAudioPath();
-                    final String uid = mUser.getUid();
-                    UserData userData = new UserData(audioPath);
-                    mRef.child("users_entered_text").child(englishText).setValue(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
-                                UserEnteredText userEnteredText = new UserEnteredText();
-                                userEnteredText.setUserText(audioText);
-                                DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-                                mDatabaseRef.child("users_entered_text").child(englishText).child(uid).setValue(userEnteredText).addOnCompleteListener(
-                                        new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    mCurrentTextPosition++;
-                                                    mMediaPlayer.reset();
-                                                    PronounceData pronounceData1 = lists.get(mCurrentTextPosition);
-                                                    String englishText = pronounceData1.getEnglishText();
-                                                    mEnterEditText.setText(englishText);
-                                                    Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent successfully!", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent failed! Try again!", Toast.LENGTH_SHORT).show();
-                                                }
+                                System.out.println("Value of english text "+englishText);
+                                UserData userData = new UserData(audioPath,emailid,audioText);
+                                mRef.child("users_entered_text").child(englishText).setValue(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()) {
+                                            mCurrentTextPosition++;
+                                            mMediaPlayer.reset();
+                                            PronounceData pronounceData1 = lists.get(mCurrentTextPosition);
+                                            String englishText = pronounceData1.getAudioId();
+                                            String audion="";
+                                            for(int i=0;i<englishText.length();i++){
+                                                if(Character.isAlphabetic(englishText.codePointAt(i))) audion+=englishText.charAt(i);
                                             }
+                                            tv2.setText("Audio: "+audion);
+                                            mEnterEditText.setText(englishText);
+                                            Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent successfully!", Toast.LENGTH_SHORT).show();
+
+                                        } else {
+                                            Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent failed! Try again!", Toast.LENGTH_SHORT).show();
                                         }
-                                );
-                            } else {
-                                Toast.makeText(PronouncerNavigationDrawerActivity.this, "Text sent failed! Try again!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                                    }
+                                });
+
+
+
+                   // final String uid = mUser.getUid();
+                   // System.out.println("UID :"+uid);
+                    System.out.println("English text :"+englishText+" Audio path :"+audioPath);
+
                 }
             }
         });
 
         mPlayButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 if (isPlayerPressed) {
@@ -240,7 +259,8 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
                     isPlayerPressed = true;
                 }
                 if (isPlayerPressed) {
-                    mPlayButton.setText(R.string.pause);
+                   // mPlayButton.setText(R.string.pause);
+                    mPlayButton.setBackground(getApplicationContext().getDrawable(R.drawable.pause1));
                     if (!isPlayerPressedFirstTime) {
                         if (!mMediaPlayer.isPlaying())
                             mMediaPlayer.start();
@@ -269,7 +289,8 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
                         });
                     }
                 } else {
-                    mPlayButton.setText(R.string.play);
+                   // mPlayButton.setText(R.string.play);
+                    mPlayButton.setBackground(getApplicationContext().getDrawable(R.drawable.play1));
                     if (mMediaPlayer.isPlaying())
                         mMediaPlayer.pause();
                     Log.d("Song duration", "" + mMediaPlayer.getDuration());
@@ -279,6 +300,9 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
             }
         });
     }
+
+
+
 
     @Override
     public void onBackPressed() {
@@ -290,67 +314,7 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.prononcer_navigation_drawer, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.phoeneme) {
-            childPath = "Phoeneme";
-            changeData(childPath);
-
-        } else if (id == R.id.stress) {
-            childPath = "Stress";
-            changeData(childPath);
-
-        } else if (id == R.id.intonation) {
-            childPath = "Intonation";
-            changeData(childPath);
-
-        } else if (id == R.id.sentence) {
-            childPath = "Sentence";
-            changeData(childPath);
-
-        } else if (id == R.id.logout) {
-            mAuth.signOut();
-            LoginManager.getInstance().logOut();
-            mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    startActivity(new Intent(PronouncerNavigationDrawerActivity.this, LoginActivity.class));
-                }
-            });
-
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     //method for changing data and changing firebase reference path
     private void changeData(String childPath) {
@@ -360,14 +324,84 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
     }
 
     private void getDataFromFirebase(String childPath) {
+
         DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference().child(childPath);
 
         mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                System.out.println("Send pressed ,No of songs edited "+mCurrentTextPosition);
                 PronounceData pronounceData = lists.get(mCurrentTextPosition);
-                String englishText = pronounceData.getEnglishText();
+                String englishText = pronounceData.getAudioId();
                 mEnterEditText.setText(englishText);
+                String audion="";
+                for(int i=0;i<englishText.length();i++){
+                    if(Character.isAlphabetic(englishText.codePointAt(i))) audion+=englishText.charAt(i);
+                }
+                tv2.setText("Audio: "+audion);
+               /* DatabaseReference mDatabaseRef1 = FirebaseDatabase.getInstance().getReference().child("users_entered_text").child(englishText);
+                mDatabaseRef1.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        //System.out.println("Send pressed ,No of songs edited "+sendPressed);
+
+                        System.out.println("get edited audio "+dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                mDatabaseRef1.addChildEventListener(new ChildEventListener() {
+                                                        @Override
+                                                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                                            c++;
+                                                            System.out.println("ON child added: "+dataSnapshot.getValue());
+                                                            if(c==2) {
+
+                                                                check=true;
+                                                                songPos=Integer.parseInt(dataSnapshot.getValue().toString());
+
+                                                                PronounceData pronounceData = lists.get(songPos);
+                                                                String englishText = pronounceData.getAudioId();
+                                                                 mEnterEditText.setText(englishText);
+                                                                String audion="";
+                                                                for(int i=0;i<englishText.length();i++){
+                                                                    if(Character.isAlphabetic(englishText.codePointAt(i))) audion+=englishText.charAt(i);
+                                                                }
+                                                                tv2.setText("Audio: "+audion);
+                                                                System.out.println("Value of Edited Audio " + songPos);
+                                                                System.out.println("Value of english text "+englishText);
+                                                            }
+
+                                                        }
+
+                                                        @Override
+                                                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                                                            // System.out.println("ON child changed method 2:getdatafromuser");
+
+                                                        }
+
+                                                        @Override
+                                                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+
+                                                    });*/
+
             }
 
             @Override
@@ -379,11 +413,13 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
         mDatabaseRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                System.out.println("ON child added method");
                 fetchData(dataSnapshot);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                System.out.println("ON child changed method");
                 fetchData(dataSnapshot);
             }
 
@@ -461,7 +497,6 @@ public class PronouncerNavigationDrawerActivity extends AppCompatActivity
 
                     if (storagePermission && recordPermission && readstoragePermission) {
                         Toast toast = Toast.makeText(PronouncerNavigationDrawerActivity.this, "Permission Granted", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
                         mLineBarVisualizer.setPlayer(mMediaPlayer.getAudioSessionId());
                     } else {

@@ -1,6 +1,38 @@
 <resources>
     <string name="app_name">Guess The Audio</string>
+    <string name="your_paytm_">Your paytm registered number</string>
+    <string name="some_id">
+98767534563
+</string>
+    <string name="we_will_sen">
+We will send you OTP to verify your number.
+</string>
+    <string name="by_continui">
+By, continuing, you agree to our terms and conditions and privacy policy.
+</string>
+    <string name="send_otp">
 
+Send OTP
+</string>
+    <string name="create_acco">
+Verify account
+</string>
+    <string name="enter_otp">
+
+Enter OTP
+</string>
+    <string name="you_will_re">
+
+You will receive an OTP on number 98767534563 in \n60 sec. If you don\u00E2\u0080\u0099t receive click resend again.
+</string>
+    <string name="annotation_">
+
+ANNOTATION\nAPP
+</string>
+    <string name="correct_ear">
+
+Correct and Earn
+</string>
     <string name="total_text">500</string>
     <string name="previous_button">Previous</string>
     <string name="next_button">Next</string>

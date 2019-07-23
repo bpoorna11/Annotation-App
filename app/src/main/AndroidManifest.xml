@@ -21,7 +21,7 @@
         <activity
             android:name=".PronouncerNavigationDrawerActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            >
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -32,8 +32,19 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".OtpActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".VerifyOtpActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity android:name=".LoginDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
 
         <!--Facebook meta data started-->

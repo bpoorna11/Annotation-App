@@ -19,4 +19,14 @@
         <item>Marathi</item>
         <item>Telugu</item>
     </array>
+    <array name="qualification">
+        <item>BTech</item>
+        <item>MTech</item>
+        <item>Bsc</item>
+        <item>Msc</item>
+        <item>Phd</item>
+
+
+    </array>
+
 </resources>

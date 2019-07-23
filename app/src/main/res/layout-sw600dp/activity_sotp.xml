@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/boundary"
+        android:layout_width="328dp"
+        android:layout_height="498dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/boundary"
+        android:elevation="4dp" />
+    <!-- Enter OTP -->
+    <TextView
+        android:id="@+id/enter_otp"
+        android:layout_width="157dp"
+        android:layout_height="47dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="96dp"
+        android:layout_marginTop="97dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:lineSpacingExtra="9sp"
+        android:text="@string/enter_otp"
+        android:textAppearance="@style/enter_otp" />
+    <TextView
+        android:id="@+id/you_will_re"
+        android:layout_width="289.33dp"
+        android:layout_height="31dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40.67dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="152.33dp"
+        android:text="@string/you_will_re"
+        android:textAppearance="@style/you_will_re"
+        android:lineSpacingExtra="4sp"
+        android:gravity="center_vertical"
+        />
+
+    <LinearLayout
+        android:layout_width="373dp"
+        android:layout_height="90dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="-1dp"
+        android:layout_marginTop="226dp"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/et1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/background_otp"
+            android:inputType="phone"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="2dp"
+            android:layout_height="0dp" />
+
+        <EditText
+            android:id="@+id/et2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/background_otp"
+            android:inputType="phone"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="2dp"
+            android:layout_height="0dp" />
+
+        <EditText
+            android:id="@+id/et3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/background_otp"
+            android:inputType="phone"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="2dp"
+            android:layout_height="0dp" />
+
+        <EditText
+            android:id="@+id/et4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/background_otp"
+            android:inputType="phone"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="2dp"
+            android:layout_height="0dp" />
+
+        <EditText
+            android:id="@+id/et5"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/background_otp"
+            android:inputType="phone"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="2dp"
+            android:layout_height="0dp" />
+
+        <EditText
+            android:id="@+id/et6"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/background_otp"
+            android:inputType="phone"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/verify_otp"
+        android:layout_width="163.33dp"
+        android:layout_height="40.67dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="93dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="417.67dp"
+        android:background="#00000000"
+
+        />
+    <Button
+        android:id="@+id/verify"
+        android:layout_width="163.33dp"
+        android:layout_height="40.67dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="93dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="417.67dp"
+        android:textColor="#FFFF"
+        android:text="Verify"
+        android:textAppearance="@style/send_otp"
+        android:background="@drawable/rectangle_4"
+        />
+
+
+
+</RelativeLayout>

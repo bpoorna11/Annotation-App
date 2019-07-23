@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="english.android.com.guess_the_audio.OtpActivity">
+
+
+   <!-- <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/firebase" />-->
+    <View
+        android:id="@+id/boundary"
+        android:layout_width="326dp"
+        android:layout_height="503dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/boundary"
+        android:elevation="1.67dp" />
+    <View
+        android:id="@+id/group_5"
+        android:layout_width="272.33dp"
+        android:layout_height="78.17dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="37dp"
+        android:layout_marginLeft="36.67dp"
+        android:layout_marginTop="235.5dp"
+        android:layout_marginEnd="102dp"
+        android:layout_marginBottom="418dp"/>
+    <!-- Your paytm registered number -->
+    <TextView
+        android:id="@+id/your_paytm_"
+        android:layout_width="213dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="36.67dp"
+        android:layout_marginTop="236.33dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:lineSpacingExtra="5sp"
+        android:text="@string/your_paytm_"
+        android:textAppearance="@style/your_paytm_" />
+    <View
+        android:id="@+id/rectangle_2"
+        android:layout_width="258.33dp"
+        android:layout_height="36.67dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="50.67dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="256.67dp"
+        android:background="@drawable/rectangle_2"
+        />
+
+    <EditText
+        android:id="@+id/editTextPhone"
+        android:layout_width="193dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="58dp"
+        android:layout_marginTop="266dp"
+        android:background="@null"
+        android:inputType="phone"
+        android:gravity="center_vertical"
+        android:lineSpacingExtra="5sp"
+        android:textAppearance="@style/some_id"
+        android:textColor="#000000" />
+    <TextView
+        android:id="@+id/we_will_sen"
+        android:layout_width="198.96dp"
+        android:layout_height="12.33dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="47.33dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="301.33dp"
+        android:text="@string/we_will_sen"
+        android:textAppearance="@style/we_will_sen"
+        android:lineSpacingExtra="4sp"
+        android:gravity="center_horizontal|center_vertical"
+        />
+    <View
+        android:id="@+id/checkbox"
+        android:layout_width="254.67dp"
+        android:layout_height="44.67dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="51.67dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="352.67dp"
+        android:background="#D3D3D3"
+
+        />
+    <View
+        android:id="@+id/check_box_"
+        android:layout_width="11.33dp"
+        android:layout_height="11.33dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="63.09dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="361.67dp"
+        android:background="#FFFF"
+        />
+    <TextView
+        android:id="@+id/by_continui"
+        android:layout_width="221dp"
+        android:layout_height="28.02dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="84dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="361dp"
+        android:text="@string/by_continui"
+        android:textAppearance="@style/by_continui"
+        android:lineSpacingExtra="4sp"
+        android:gravity="center_vertical"
+        />
+    <View
+        android:id="@+id/rectangle_3"
+        android:layout_width="6.42dp"
+        android:layout_height="6.35dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="65.56dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="363.93dp"
+        android:background="@drawable/rectangle_3"
+        />
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/send_otp"
+        android:layout_width="163.33dp"
+        android:layout_height="40.67dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="93dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="417.67dp"
+        android:background="#00000000"
+
+        />
+    <Button
+        android:id="@+id/buttonGetVerificationCode"
+        android:layout_width="163.33dp"
+        android:layout_height="40.67dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="93dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="417.67dp"
+        android:textColor="#FFFF"
+        android:text="@string/send_otp"
+        android:textAppearance="@style/send_otp"
+        android:background="@drawable/rectangle_4"
+        />
+
+
+    <TextView
+        android:id="@+id/create_acco"
+        android:layout_width="281dp"
+        android:layout_height="72dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="99dp"
+        android:layout_marginEnd="42dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:lineSpacingExtra="9sp"
+        android:text="@string/create_acco"
+        android:textAppearance="@style/create_acco"
+        android:textColor="#000"
+        android:textSize="30dp" />
+
+
+    <!--<LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+        android:padding="15dp">
+
+
+
+        <EditText
+            android:id="@+id/editTextCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789"
+            android:hint="Enter code received"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/buttonSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign In" />
+    </LinearLayout>-->
+
+</RelativeLayout>

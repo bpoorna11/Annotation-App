@@ -30,17 +30,29 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import english.android.com.guess_the_audio.models.PronounceData;
+import english.android.com.guess_the_audio.models.User;
 
 public class LoginActivity extends AppCompatActivity {
-
+    static boolean datapresent=false;
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "facebook_login";
-
+    private String childPath = "users";
+    private String emailid="";
+    private int mCurrentTextPosition = 0;
     @BindView(R.id.btn_facebook)
     Button mFacebookLoginButton;
     @BindView(R.id.btn_google)
@@ -77,7 +89,6 @@ public class LoginActivity extends AppCompatActivity {
         mCallbackManager = CallbackManager.Factory.create();
 
         configGoogleSignIn();
-
         mFacebookLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                 signInWithGoogle();
             }
         });
+
     }
 
     private void signInWithFacebook() {
@@ -197,7 +209,8 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                     @Override
                     public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                        if(task.getResult().getSignInMethods().isEmpty()) {
+                       // if(task.getResult().getSignInMethods().isEmpty()) {
+                            System.out.println("If in firebaseAuthWithGoogle");
                             AuthCredential authCredential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                             mFirebaseAuth.signInWithCredential(authCredential)
                                     .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
@@ -214,12 +227,13 @@ public class LoginActivity extends AppCompatActivity {
                                             mGoogleLoginButton.setEnabled(true);
                                         }
                                     });
-                        }
+                      //  }
 
-                        else {
+                        /*else {
+                            System.out.println("Else in firebaseAuthWithGoogle "+task.isSuccessful());
                             startActivity(new Intent(LoginActivity.this, PronouncerNavigationDrawerActivity.class));
                             finish();
-                        }
+                        }*/
 
                     }
                 });
@@ -227,12 +241,48 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser firebaseUser) {
+        System.out.println("Inside updateui "+firebaseUser);
         if (firebaseUser != null) {
-            Toast.makeText(this, "Authentication Successful!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, LoginDetailsActivity.class));
-            finish();
+            getDataFromFirebase(childPath,firebaseUser);
+            //finish();
+
+           // Toast.makeText(this, "Authentication Successful!", Toast.LENGTH_SHORT).show();
+
         } else {
             Toast.makeText(this, "Authentication Failed! Please try again!", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    private void getDataFromFirebase(String childPath,FirebaseUser firebaseUser) {
+        emailid=firebaseUser.getEmail();
+        emailid=emailid.replaceAll("\\.", "_");
+        System.out.println(emailid);
+        DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference().child(childPath).child(emailid);
+
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                System.out.println("On data change method "+ dataSnapshot.getValue());
+                if(dataSnapshot.getValue()!=null) {
+                    Intent in=new Intent(LoginActivity.this,PronouncerNavigationDrawerActivity.class);
+                    startActivity(in);
+                    finish();
+                }else{
+                    Intent in=new Intent(LoginActivity.this,OtpActivity.class);
+                    startActivity(in);
+                    finish();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+
 }
